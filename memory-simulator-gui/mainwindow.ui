@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>883</width>
+    <height>692</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Memory Simulator Visualization</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* --- Global Settings --- */
+QMainWindow, QWidget#centralwidget {
+        background-color: #2b2b2b; /* Dark background color */
+        color: #f0f0f0; /* Light text color */
+        font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+}
+
+/* --- QGroupBox Styling (The containers) --- */
+QGroupBox {
+        border: 1px solid #555555; /* Subtle border */
+        border-radius: 6px; /* Rounded corners */
+        margin-top: 1.2em; /* Leave space for the title */
+        font-weight: bold;
+        color: #00adb5; /* Teal accent color for titles */
+    background-color: #323232; /* Slightly lighter than main bg */
+}
+
+QGroupBox::title {
+        subcontrol-origin: margin;
+        left: 10px;
+        padding: 0 5px 0 5px;
+        background-color: #323232; /* Match groupbox bg so line breaks behind text */
+}
+
+/* --- QPushButton Styling (The buttons) --- */
+QPushButton {
+        background-color: #00798c; /* Dark Teal background */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 15px; /* Taller and wider padding */
+        font-weight: bold;
+    font-size: 11px;
+}
+
+QPushButton:hover {
+        background-color: #00adb5; /* Lighter Teal on hover */
+}
+
+QPushButton:pressed {
+        background-color: #005f6b; /* Darker Teal when clicking */
+    padding-top: 7px; /* Subtle press effect */
+    padding-bottom: 5px;
+}
+
+/* --- QLineEdit and QComboBox (Input fields) --- */
+QLineEdit, QComboBox {
+        background-color: #3c3c3c; /* Dark input background */
+        border: 1px solid #555555;
+        border-radius: 3px;
+        padding: 4px;
+        color: #ffffff;
+    selection-background-color: #00adb5;
+}
+
+QLineEdit:focus, QComboBox:focus {
+        border: 1px solid #00adb5; /* Glow border when selected */
+}
+
+/* --- QComboBox specific drop-down styling --- */
+QComboBox QAbstractItemView {
+    background-color: #3c3c3c;
+    color: white;
+    selection-background-color: #00adb5;
+    outline: none;
+}
+
+/* --- QLabel Styling --- */
+QLabel {
+        color: #d0d0d0; /* Slightly dimmed white for labels */
+    font-size: 12px;
+}
+
+/* --- Specific Widget Styling --- */
+
+/* The Memory Map View Area */
+QGraphicsView#memoryView {
+        background-color: #1a1a1a; /* Very dark background to make blocks pop */
+        border: 2px solid #444;
+    border-radius: 4px;
+}
+
+/* The Console Log at the bottom */
+QTextEdit#consoleLog {
+        background-color: #1e1e1e; /* Terminal Black */
+        color: #33ff33; /* Matrix Green text */
+        font-family: &quot;Consolas&quot;, &quot;Courier New&quot;, monospace; /* Terminal font */
+        border: 1px solid #555555;
+    border-radius: 4px;
+}
+
+/* Stats labels - make them stand out slightly */
+QLabel#memStatsLabel, QLabel#cacheStatsLabel, QLabel#cycleLabel {
+    font-weight: bold;
+    color: #ffffff;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QGroupBox" name="controlsBox">
+        <property name="title">
+         <string>Controls</string>
+        </property>
+        <layout class="QVBoxLayout" name="controlsLayout">
+         <item>
+          <widget class="QGroupBox" name="memInitBox">
+           <property name="title">
+            <string>Physical Memory</string>
+           </property>
+           <layout class="QHBoxLayout" name="memInitLayout">
+            <item>
+             <widget class="QLineEdit" name="memSizeEdit">
+              <property name="placeholderText">
+               <string>Total size (bytes)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="initButton">
+              <property name="text">
+               <string>Initialize</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="allocBox">
+           <property name="title">
+            <string>Allocation</string>
+           </property>
+           <layout class="QVBoxLayout" name="allocLayout">
+            <item>
+             <layout class="QHBoxLayout" name="mallocLayout">
+              <item>
+               <widget class="QLineEdit" name="allocSizeEdit">
+                <property name="placeholderText">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mallocButton">
+                <property name="text">
+                 <string>Malloc</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="freeLayout">
+              <item>
+               <widget class="QLineEdit" name="freeIdEdit">
+                <property name="placeholderText">
+                 <string>Block ID</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="freeButton">
+                <property name="text">
+                 <string>Free</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="strategyBox">
+           <property name="title">
+            <string>Allocator Strategy</string>
+           </property>
+           <layout class="QHBoxLayout" name="strategyLayout">
+            <item>
+             <widget class="QComboBox" name="strategyCombo">
+              <item>
+               <property name="text">
+                <string>First Fit</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Best Fit</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Worst Fit</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="setStrategyButton">
+              <property name="text">
+               <string>Apply</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="cacheBox">
+           <property name="title">
+            <string>Cache Config</string>
+           </property>
+           <layout class="QVBoxLayout" name="cacheBoxLayout">
+            <item>
+             <layout class="QHBoxLayout" name="l1Layout">
+              <item>
+               <widget class="QLabel" name="l1Label">
+                <property name="text">
+                 <string>L1:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l1SizeEdit">
+                <property name="placeholderText">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l1BlockEdit">
+                <property name="placeholderText">
+                 <string>Block</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l1AssocEdit">
+                <property name="placeholderText">
+                 <string>Assoc</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="setL1Button">
+                <property name="text">
+                 <string>Set</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="l2Layout">
+              <item>
+               <widget class="QLabel" name="l2Label">
+                <property name="text">
+                 <string>L2:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l2SizeEdit">
+                <property name="placeholderText">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l2BlockEdit">
+                <property name="placeholderText">
+                 <string>Block</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="l2AssocEdit">
+                <property name="placeholderText">
+                 <string>Assoc</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="setL2Button">
+                <property name="text">
+                 <string>Set</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="accessBox">
+           <property name="title">
+            <string>Access</string>
+           </property>
+           <layout class="QHBoxLayout" name="accessLayout">
+            <item>
+             <widget class="QLineEdit" name="accessIdEdit">
+              <property name="placeholderText">
+               <string>Block ID</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="accessOffsetEdit">
+              <property name="placeholderText">
+               <string>Offset</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="accessButton">
+              <property name="text">
+               <string>Access</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="memoryBox">
+        <property name="title">
+         <string>Memory Map</string>
+        </property>
+        <layout class="QVBoxLayout" name="memoryLayout">
+         <item>
+          <widget class="QGraphicsView" name="memoryView"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="statsBox">
+        <property name="title">
+         <string>Stats</string>
+        </property>
+        <layout class="QVBoxLayout" name="statsLayout">
+         <item>
+          <widget class="QLabel" name="memStatsLabel">
+           <property name="text">
+            <string>Memory Stats</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="cacheStatsLabel">
+           <property name="text">
+            <string>Cache Stats</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="cycleLabel">
+           <property name="text">
+            <string>Total cycles: 0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="resetButton">
+           <property name="text">
+            <string>Reset</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="consoleLog">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="html">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Consolas','Courier New','monospace'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Consolas'; font-size:8.25pt;&quot;&gt;System initialized. Waiting for input...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

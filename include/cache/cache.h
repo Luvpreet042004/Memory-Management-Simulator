@@ -13,6 +13,7 @@ public:
     Cache();
 
     void configure(size_t cache_size, size_t block_size, size_t assoc);
+    void reset();
 
     bool access(size_t address);
 

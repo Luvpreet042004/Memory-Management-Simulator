@@ -1,3 +1,4 @@
 # Build artifacts
 *.exe
 *.o
+.vscode/

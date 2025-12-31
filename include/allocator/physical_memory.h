@@ -5,25 +5,28 @@
 #include <map>
 #include <cstdint>
 
-enum class FitStrategy {
+enum class FitStrategy
+{
     FIRST_FIT,
     BEST_FIT,
     WORST_FIT
 };
 
-struct MemoryBlock {
+struct MemoryBlock
+{
     size_t start;
     size_t size;
 };
 
-struct AllocatedBlock {
+struct AllocatedBlock
+{
     size_t id;
     size_t start;
     size_t size;
     size_t requested;
 };
 
-class PhysicalMemory {
+class PhysicalMemory{
 public:
     explicit PhysicalMemory(size_t total_size);
 
@@ -34,8 +37,13 @@ public:
 
     void dump() const;
     void stats() const;
-
     void set_strategy(FitStrategy s);
+
+    size_t get_total_memory() const { return total_size; }
+    size_t get_used_memory() const;
+
+    const std::list<MemoryBlock> &get_free_list() const { return free_list; }
+    const std::map<size_t, AllocatedBlock> &get_allocated() const { return allocated; }
 
 private:
     size_t total_size;

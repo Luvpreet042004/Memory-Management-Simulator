@@ -124,3 +124,11 @@ void PhysicalMemory::stats() const {
     std::cout << "Allocation success rate: " << success_rate << "%\n";
 }
 
+size_t PhysicalMemory::get_used_memory() const {
+    size_t used = 0;
+    for (const auto& pair : allocated) {
+        used += pair.second.size;
+    }
+    return used;
+}
+
