@@ -1,0 +1,21 @@
+init memory 2048
+malloc 200
+malloc 300
+malloc 100
+malloc 400
+stats
+free 2
+dump
+stats
+set allocator to best_fit
+malloc 300
+access 6 0
+set cache l1 256 32 4
+set cache l2 1024 64 4
+access 1 30
+access 1 20
+access 2 100
+access 2 50
+cache stats
+exit
+
